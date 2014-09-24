@@ -356,6 +356,10 @@
 
     // Remove item from multiple select
     ctrl.removeChoice = function(index){
+      var item = ctrl.selected[index];
+      ctrl.onRemoveCallback($scope, {
+          $item: item
+      });
       ctrl.selected.splice(index, 1);
       ctrl.activeMatchIndex = -1;
       ctrl.sizeSearchInput();
@@ -571,6 +575,10 @@
         $select.multiple = angular.isDefined(attrs.multiple);
 
         $select.onSelectCallback = $parse(attrs.onSelect);
+
+        if ($select.multiple) {
+          $select.onRemoveCallback = $parse(attrs.onRemove);
+        }
 
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
