@@ -574,6 +574,15 @@
 
         $select.multiple = angular.isDefined(attrs.multiple);
 
+        var defaultSortableOptions = {
+           placeholder: "ui-state-highlight",
+           helper: "clone",
+           opacity: 0.5,
+           tolerance: "pointer"
+        };
+        $select.sortableOptions = defaultSortableOptions;
+        
+
         $select.onSelectCallback = $parse(attrs.onSelect);
 
         if ($select.multiple) {
