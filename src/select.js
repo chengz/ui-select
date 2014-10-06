@@ -574,20 +574,34 @@
 
         $select.multiple = angular.isDefined(attrs.multiple);
 
-        var defaultSortableOptions = {
-           placeholder: "ui-state-highlight",
-           helper: "clone",
-           opacity: 0.5,
-           tolerance: "pointer"
-        };
-        $select.sortableOptions = defaultSortableOptions;
-        
-
         $select.onSelectCallback = $parse(attrs.onSelect);
 
         if ($select.multiple) {
           $select.onRemoveCallback = $parse(attrs.onRemove);
         }
+
+        var defaultSortableOptions = {
+            placeholder: "ui-state-highlight",
+            opacity: 0.7,
+            stop: function() {
+              angular.forEach(ngModel.$modelValue, function(item){
+                $select.onRemoveCallback(scope, {
+                    $item: item
+                });
+              });
+
+              angular.forEach(ngModel.$modelValue, function(item){
+                var locals = {};
+                locals[$select.parserResult.itemName] = item;
+                $select.onSelectCallback(scope, {
+                    $item: item,
+                    $model: $select.parserResult.modelMapper(scope, locals)
+                });
+              });
+            }
+           
+        };
+        $select.sortableOptions = defaultSortableOptions;
 
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
